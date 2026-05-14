@@ -1,0 +1,19 @@
+services:
+  rag-api:
+    build: .
+    image: rag-mlops-api:local
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      RAG_API_HOST: "0.0.0.0"
+      RAG_API_PORT: "8000"
+      RAG_EMBEDDING_CACHE_DIR: "/models/sentence-transformers"
+      # Set to true after the first successful download/cache warm-up.
+      RAG_EMBEDDING_OFFLINE: "false"
+      RAG_OLLAMA_HOST: "http://host.docker.internal:11434"
+    volumes:
+      - ./models/sentence-transformers:/models/sentence-transformers
+      - ./outputs:/app/outputs
+      - ./artifacts:/app/artifacts

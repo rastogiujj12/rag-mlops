@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rag-api
+  labels:
+    app: rag-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rag-api
+  template:
+    metadata:
+      labels:
+        app: rag-api
+    spec:
+      containers:
+        - name: rag-api
+          image: ghcr.io/OWNER/REPO:latest # CI replaces this tag for GitOps/ArgoCD
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: RAG_LLM_PROVIDER
+              value: "ollama"
+            - name: RAG_OLLAMA_HOST
+              value: "http://host.docker.internal:11434"
+            - name: RAG_API_HOST
+              value: "0.0.0.0"
+            - name: RAG_API_PORT
+              value: "8000"
+            - name: RAG_EMBEDDING_CACHE_DIR
+              value: "/models/sentence-transformers"
+            - name: RAG_EMBEDDING_DEVICE
+              value: "cpu"
+            - name: RAG_EMBEDDING_OFFLINE
+              value: "false"
+          volumeMounts:
+            - name: sentence-transformer-cache
+              mountPath: /models/sentence-transformers
+            - name: rag-outputs
+              mountPath: /app/outputs
+            - name: rag-artifacts
+              mountPath: /app/artifacts
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+      volumes:
+        - name: sentence-transformer-cache
+          hostPath:
+            path: /home/ujjwal/rag-model-cache/sentence-transformers
+            type: DirectoryOrCreate
+        - name: rag-outputs
+          hostPath:
+            path: /home/ujjwal/rag-mlops-runtime/outputs
+            type: DirectoryOrCreate
+        - name: rag-artifacts
+          hostPath:
+            path: /home/ujjwal/rag-mlops-runtime/artifacts
+            type: DirectoryOrCreate

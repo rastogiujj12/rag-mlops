@@ -1,0 +1,27 @@
+# Core
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# ML / IR
+rank-bm25==0.2.2
+sentence-transformers==3.2.1
+faiss-cpu==1.9.0
+numpy==1.26.4
+scikit-learn==1.5.2
+
+# Data
+pypdf==5.0.1
+
+# Utils
+requests==2.32.3
+tqdm==4.66.5
+loguru==0.7.2
+typer==0.12.5
+python-multipart==0.0.12
+
+# Testing
+pytest==8.3.3
+pytest-cov==5.0.0
+ruff==0.6.9
