@@ -79,6 +79,20 @@ jobs:
 
           cp -R restored-artifacts/* . || true
 
+      - name: Verify restored artefacts
+        run: |
+          echo "Checking restored CT artefacts..."
+
+          test -f data/processed/chunks.pkl
+          test -f data/processed/corpus.jsonl
+          test -f outputs/indices/bm25.pkl
+          test -d outputs/indices/dense
+
+          echo "Dense index folders:"
+          find outputs/indices/dense -maxdepth 2 -type f -print || true
+
+          echo "Restored artefacts verified."
+
       - name: Rebuild dense indexes
         run: |
           python -m src.cli train --force
