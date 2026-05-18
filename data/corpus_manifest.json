@@ -1,0 +1,17 @@
+{
+  "corpus_version": "academic-rag-demo-v1",
+  "documents": [
+    {
+      "doc_id": "2005.11401",
+      "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+      "source_url": "https://arxiv.org/pdf/2005.11401",
+      "filename": "2005.11401.pdf"
+    },
+    {
+      "doc_id": "2212.03533v2",
+      "title": "Text Embeddings by Weakly-Supervised Contrastive Pre-training",
+      "source_url": "https://arxiv.org/pdf/2212.03533v2",
+      "filename": "2212.03533v2.pdf"
+    }
+  ]
+}

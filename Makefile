@@ -1,8 +1,12 @@
-.PHONY: install test lint format ingest train evaluate pipeline local-run serve warm-cache docker-build docker-run clean
+.PHONY: install test lint format download-corpus ingest train evaluate pipeline local-run serve warm-cache docker-build docker-run clean
 
+MANIFEST ?= data/corpus_manifest.json
 PDF_DIR ?= data/raw/pdfs
 JSONL_PATH ?=
 MAX_QUERIES ?= 50
+
+download-corpus:
+	python scripts/download_corpus.py --manifest $(MANIFEST) --output-dir $(PDF_DIR)
 
 install:
 	pip install -r requirements.txt
