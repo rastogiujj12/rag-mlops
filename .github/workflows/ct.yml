@@ -1,7 +1,6 @@
 name: CT - Continuous Training
 
 on:
-  on:
   push:
     branches:
       - main
