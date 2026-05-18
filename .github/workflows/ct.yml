@@ -1,7 +1,14 @@
 name: CT - Continuous Training
 
 on:
-  workflow_dispatch:
+  on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - "data/corpus_manifest.json"
+      - "scripts/download_corpus.py"
 
 jobs:
   continuous-training:
@@ -41,7 +48,7 @@ jobs:
         run: |
           python -m src.cli run-full \
             --source jsonl \
-            --jsonl-path data/demo/demo_corpus.jsonl
+            --pdf-dir data/raw/pdfs
 
       - name: Show generated artefacts
         run: |
