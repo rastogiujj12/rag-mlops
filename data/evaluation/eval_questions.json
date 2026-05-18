@@ -1,0 +1,22 @@
+[
+  {
+    "id": "q1",
+    "question": "What problem does retrieval augmented generation address?",
+    "relevant_doc_ids": ["2005.11401"]
+  },
+  {
+    "id": "q2",
+    "question": "How does RAG combine parametric and non-parametric memory?",
+    "relevant_doc_ids": ["2005.11401"]
+  },
+  {
+    "id": "q3",
+    "question": "Why are dense text embeddings useful for semantic search?",
+    "relevant_doc_ids": ["2212.03533v2"]
+  },
+  {
+    "id": "q4",
+    "question": "What is weakly supervised contrastive pre-training used for?",
+    "relevant_doc_ids": ["2212.03533v2"]
+  }
+]
