@@ -26,3 +26,6 @@ models/
 .cache/
 
 models/
+
+kubectl
+runtime-artifacts/

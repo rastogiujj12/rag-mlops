@@ -2,8 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rag-api
-  labels:
-    app: rag-api
+  namespace: rag-mlops
 spec:
   replicas: 1
   selector:
@@ -14,37 +13,32 @@ spec:
       labels:
         app: rag-api
     spec:
+      enableServiceLinks: false
       containers:
         - name: rag-api
-          image: ghcr.io/OWNER/REPO:latest # CI replaces this tag for GitOps/ArgoCD
+          image: ghcr.io/rastogiujj12/rag-mlops:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
           env:
             - name: RAG_LLM_PROVIDER
-              value: "ollama"
-            - name: RAG_OLLAMA_HOST
-              value: "http://host.docker.internal:11434"
-            - name: RAG_API_HOST
-              value: "0.0.0.0"
-            - name: RAG_API_PORT
-              value: "8000"
+              value: "stub"
             - name: RAG_EMBEDDING_CACHE_DIR
               value: "/models/sentence-transformers"
-            - name: RAG_EMBEDDING_DEVICE
-              value: "cpu"
             - name: RAG_EMBEDDING_OFFLINE
-              value: "false"
+              value: "true"
           volumeMounts:
-            - name: sentence-transformer-cache
-              mountPath: /models/sentence-transformers
-            - name: rag-outputs
+            - name: outputs
               mountPath: /app/outputs
-            - name: rag-artifacts
+            - name: artifacts
               mountPath: /app/artifacts
+            - name: processed-data
+              mountPath: /app/data/processed
+            - name: embedding-cache
+              mountPath: /models/sentence-transformers
           readinessProbe:
             httpGet:
-              path: /ready
+              path: /health
               port: 8000
             initialDelaySeconds: 10
             periodSeconds: 10
@@ -55,15 +49,11 @@ spec:
             initialDelaySeconds: 20
             periodSeconds: 20
       volumes:
-        - name: sentence-transformer-cache
-          hostPath:
-            path: /home/ujjwal/rag-model-cache/sentence-transformers
-            type: DirectoryOrCreate
-        - name: rag-outputs
-          hostPath:
-            path: /home/ujjwal/rag-mlops-runtime/outputs
-            type: DirectoryOrCreate
-        - name: rag-artifacts
-          hostPath:
-            path: /home/ujjwal/rag-mlops-runtime/artifacts
-            type: DirectoryOrCreate
+        - name: outputs
+          emptyDir: {}
+        - name: artifacts
+          emptyDir: {}
+        - name: processed-data
+          emptyDir: {}
+        - name: embedding-cache
+          emptyDir: {}
