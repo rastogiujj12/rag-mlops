@@ -183,22 +183,25 @@ jobs:
           cat outputs/best_model.json
 
       - name: Run full CT
-        if: env.CT_MODE == 'full'
+        if: env.CT_MODE == 'full' || steps.restore_artifacts.outputs.restore_status == 'failed'
         run: |
+          echo "Running full CT pipeline..."
           make download-corpus
           python -m src.cli run-full \
             --source pdf \
             --pdf-dir data/raw/pdfs
 
       - name: Run dense rebuild CT
-        if: env.CT_MODE == 'dense'
+        if: env.CT_MODE == 'dense' && steps.restore_artifacts.outputs.restore_status == 'success'
         run: |
+          echo "Running dense rebuild CT..."
           python -m src.cli train --force
           python -m src.cli evaluate
 
       - name: Run evaluation-only CT
-        if: env.CT_MODE == 'evaluation'
+        if: env.CT_MODE == 'evaluation' && steps.restore_artifacts.outputs.restore_status == 'success'
         run: |
+          echo "Running evaluation-only CT..."
           python -m src.cli evaluate
 
       - name: Show selected model and evaluation report
