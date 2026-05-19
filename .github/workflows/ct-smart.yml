@@ -84,9 +84,9 @@ jobs:
           CHANGED="$(paste -sd ',' changed_files.txt)"
           echo "changed_files=$CHANGED" >> "$GITHUB_OUTPUT"
 
-          FULL_REGEX='^(data/corpus_manifest\.json|scripts/download_corpus\.py|src/ingestion/|src/chunking/|src/pipeline/|src/core/config\.py|Makefile)'
+          FULL_REGEX='^(data/corpus_manifest\.json|scripts/download_corpus\.py|src/ingestion/|src/chunking/|src/pipeline/|src/core/config\.py|Makefile|\.github/workflows/ct-smart\.yml)'
           DENSE_REGEX='^(src/core/registry\.py|src/indexing/dense\.py|src/indexing/model_loader\.py)'
-          EVAL_REGEX='^(data/evaluation/|src/evaluation/|src/retrieval/)'
+          EVAL_REGEX='^(data/evaluation/|src/evaluation/|src/retrieval/|scripts/download_latest_ct_artifact\.sh)'
 
           if grep -Eq "$FULL_REGEX" changed_files.txt; then
             MODE="full"
