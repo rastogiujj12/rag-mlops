@@ -140,16 +140,38 @@ jobs:
           pip install -r requirements.txt
 
       - name: Restore latest CT artefacts for partial CT
+        id: restore_artifacts
         if: env.CT_MODE == 'dense' || env.CT_MODE == 'evaluation'
         env:
           GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.ref_name }}
+        shell: bash
         run: |
-          bash scripts/download_latest_ct_artifact.sh
+          set +e
 
-          rm -rf data/processed outputs artifacts
-          cp -R runtime-artifacts/data/processed data/processed
-          cp -R runtime-artifacts/outputs outputs
-          cp -R runtime-artifacts/artifacts artifacts || mkdir -p artifacts
+          echo "Attempting to restore latest CT artefacts for branch: $BRANCH"
+          bash scripts/download_latest_ct_artifact.sh
+          RESTORE_EXIT_CODE=$?
+
+          if [ "$RESTORE_EXIT_CODE" -eq 0 ]; then
+            echo "CT artefact restore succeeded."
+
+            rm -rf data/processed outputs artifacts
+            cp -R runtime-artifacts/data/processed data/processed
+            cp -R runtime-artifacts/outputs outputs
+
+            if [ -d runtime-artifacts/artifacts ]; then
+              cp -R runtime-artifacts/artifacts artifacts
+            else
+              mkdir -p artifacts
+            fi
+
+            echo "restore_status=success" >> "$GITHUB_OUTPUT"
+          else
+            echo "CT artefact restore failed."
+            echo "Falling back to full CT rebuild."
+            echo "restore_status=failed" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Verify restored artefacts for partial CT
         if: env.CT_MODE == 'dense' || env.CT_MODE == 'evaluation'

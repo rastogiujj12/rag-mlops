@@ -6,9 +6,7 @@ BRANCH="${BRANCH:-main}"
 OUT_DIR="${OUT_DIR:-runtime-artifacts}"
 
 WORKFLOWS=(
-  "CT - Evaluation Only"
-  "CT - Dense Rebuild"
-  "CT - Full Rebuild"
+  "CT - Smart Pipeline"
 )
 
 rm -rf "$OUT_DIR"
