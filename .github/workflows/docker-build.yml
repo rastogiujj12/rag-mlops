@@ -10,8 +10,6 @@ on:
       - "Dockerfile"
       - "docker-compose.yml"
       - "requirements.txt"
-      - "k8s/**"
-      - "kind/**"
       - ".github/workflows/docker-build.yml"
   workflow_dispatch:
     inputs:
@@ -21,21 +19,24 @@ on:
         default: "true"
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
   docker-build:
-    name: Build and publish Docker image
+    name: Build, publish, and update deployment image
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     env:
       IMAGE_NAME: ghcr.io/rastogiujj12/rag-mlops
+      IMAGE_TAG: ${{ github.sha }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -65,4 +66,52 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+      - name: Update Kubernetes deployment image tag
+        if: ${{ github.event_name == 'push' || github.event.inputs.push_image == 'true' }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("k8s/deployment.yaml")
+          text = path.read_text(encoding="utf-8")
+
+          old_prefix = "image: ghcr.io/rastogiujj12/rag-mlops:"
+          new_line = f"image: ghcr.io/rastogiujj12/rag-mlops:${{ github.sha }}"
+
+          lines = []
+          changed = False
+
+          for line in text.splitlines():
+              stripped = line.strip()
+              if stripped.startswith(old_prefix):
+                  indent = line[: len(line) - len(line.lstrip())]
+                  lines.append(indent + new_line)
+                  changed = True
+              else:
+                  lines.append(line)
+
+          if not changed:
+              raise SystemExit("Could not find rag-mlops image line in k8s/deployment.yaml")
+
+          path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
+
+          echo "Updated image line:"
+          grep -n "image: ghcr.io/rastogiujj12/rag-mlops" k8s/deployment.yaml
+
+      - name: Commit updated deployment manifest
+        if: ${{ github.event_name == 'push' || github.event.inputs.push_image == 'true' }}
+        run: |
+          if git diff --quiet k8s/deployment.yaml; then
+            echo "No deployment image change to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add k8s/deployment.yaml
+          git commit -m "deploy: update rag-api image to ${{ github.sha }}"
+          git push origin main
