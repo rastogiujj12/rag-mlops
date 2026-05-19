@@ -1,23 +1,32 @@
 [
   {
-    "id": "q1",
-    "question": "What problem does retrieval augmented generation address?",
+    "id": "q_rag_1",
+    "question": "How can a generation model update its knowledge without retraining all parameters?",
     "relevant_doc_ids": ["2005.11401"]
   },
   {
-    "id": "q2",
-    "question": "How does RAG combine parametric and non-parametric memory?",
+    "id": "q_rag_2",
+    "question": "What is the role of non-parametric memory in retrieval augmented generation?",
     "relevant_doc_ids": ["2005.11401"]
   },
   {
-    "id": "q3",
-    "question": "Why are dense text embeddings useful for semantic search?",
+    "id": "q_rag_3",
+    "question": "Why can retrieval reduce hallucination in knowledge-intensive generation?",
+    "relevant_doc_ids": ["2005.11401"]
+  },
+  {
+    "id": "q_embed_1",
+    "question": "How does contrastive pre-training improve dense text representations?",
     "relevant_doc_ids": ["2212.03533v2"]
   },
   {
-    "id": "q4",
-    "question": "What is weakly supervised contrastive pre-training used for?",
+    "id": "q_embed_2",
+    "question": "Why are text embeddings useful for semantic retrieval when exact words differ?",
+    "relevant_doc_ids": ["2212.03533v2"]
+  },
+  {
+    "id": "q_embed_3",
+    "question": "What training signal is used to align related texts in embedding space?",
     "relevant_doc_ids": ["2212.03533v2"]
   }
-]
- 
+] 
