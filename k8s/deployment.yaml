@@ -26,7 +26,7 @@ spec:
             - name: RAG_EMBEDDING_CACHE_DIR
               value: "/models/sentence-transformers"
             - name: RAG_EMBEDDING_OFFLINE
-              value: "true"
+              value: "false"
           volumeMounts:
             - name: outputs
               mountPath: /app/outputs
@@ -50,10 +50,20 @@ spec:
             periodSeconds: 20
       volumes:
         - name: outputs
-          emptyDir: {}
+          hostPath:
+            path: /runtime-artifacts/outputs
+            type: Directory
+
         - name: artifacts
-          emptyDir: {}
+          hostPath:
+            path: /runtime-artifacts/artifacts
+            type: DirectoryOrCreate
+
         - name: processed-data
-          emptyDir: {}
+          hostPath:
+            path: /runtime-artifacts/data/processed
+            type: Directory
+
         - name: embedding-cache
-          emptyDir: {}
+          hostPath:
+            path: /models/sentence-tran

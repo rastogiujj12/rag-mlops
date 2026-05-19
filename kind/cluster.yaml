@@ -1,15 +1,17 @@
-# Kind cluster config for local MLOps demo.
-# IMPORTANT: hostPath volumes in Kubernetes are paths inside the Kind node container.
-# extraMounts maps real host folders into the node so the pod can access model cache,
-# generated retrieval artefacts, and evaluation outputs.
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
+
 nodes:
   - role: control-plane
     extraMounts:
-      - hostPath: /home/ujjwal/rag-model-cache/sentence-transformers
-        containerPath: /home/ujjwal/rag-model-cache/sentence-transformers
-      - hostPath: /home/ujjwal/rag-mlops-runtime/outputs
-        containerPath: /home/ujjwal/rag-mlops-runtime/outputs
-      - hostPath: /home/ujjwal/rag-mlops-runtime/artifacts
-        containerPath: /home/ujjwal/rag-mlops-runtime/artifacts
+      - hostPath: "/home/ujjwal/ATU/0. assignments/rag-mlops-system/runtime-artifacts/outputs"
+        containerPath: /runtime-artifacts/outputs
+
+      - hostPath: "/home/ujjwal/ATU/0. assignments/rag-mlops-system/runtime-artifacts/artifacts"
+        containerPath: /runtime-artifacts/artifacts
+
+      - hostPath: "/home/ujjwal/ATU/0. assignments/rag-mlops-system/runtime-artifacts/data/processed"
+        containerPath: /runtime-artifacts/data/processed
+
+      - hostPath: "/home/ujjwal/ATU/0. assignments/rag-mlops-system/models/sentence-transformers"
+        containerPath: /models/sentence-transformers

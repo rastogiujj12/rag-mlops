@@ -1,4 +1,4 @@
-.PHONY: install test lint format download-corpus ingest train evaluate pipeline local-run serve warm-cache docker-build docker-run download-latest-ct-artifact clean
+.PHONY: install test lint format download-corpus download-latest-ct-artifact kind-create deploy-kind ingest train evaluate pipeline local-run serve warm-cache docker-build docker-run clean
 
 MANIFEST ?= data/corpus_manifest.json
 PDF_DIR ?= data/raw/pdfs
@@ -57,6 +57,12 @@ docker-run:
 
 download-latest-ct-artifact:
 	bash scripts/download_latest_ct_artifact.sh
+
+kind-create:
+	bash scripts/create_kind_cluster.sh
+
+deploy-kind:
+	bash scripts/deploy_kind.sh
 
 clean:
 	rm -rf data/processed outputs/indices outputs/eval/*.json outputs/eval/*.md outputs/best_model.json
