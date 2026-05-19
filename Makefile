@@ -1,4 +1,4 @@
-.PHONY: install test lint format download-corpus ingest train evaluate pipeline local-run serve warm-cache docker-build docker-run clean
+.PHONY: install test lint format download-corpus ingest train evaluate pipeline local-run serve warm-cache docker-build docker-run download-latest-ct-artifact clean
 
 MANIFEST ?= data/corpus_manifest.json
 PDF_DIR ?= data/raw/pdfs
@@ -54,6 +54,9 @@ docker-run:
 		-v $$(pwd)/outputs:/app/outputs \
 		-v $$(pwd)/artifacts:/app/artifacts \
 		rag-mlops:latest
+
+download-latest-ct-artifact:
+	bash scripts/download_latest_ct_artifact.sh
 
 clean:
 	rm -rf data/processed outputs/indices outputs/eval/*.json outputs/eval/*.md outputs/best_model.json
