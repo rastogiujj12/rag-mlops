@@ -88,7 +88,8 @@ def version():
     best = load_best_model() or {}
     latest = latest_run_metadata() or {}
     return VersionResponse(
-        app_version=app.version,
+        # app_version=app.version,
+        app_version="demo_mlops_api_v1.1.0",
         git_commit=settings.git_commit,
         docker_image_tag=settings.docker_image_tag,
         artifact_run_id=settings.active_artifact_run_id or latest.get("run_id"),
@@ -100,6 +101,7 @@ def version():
         llm_provider=settings.llm_provider,
         llm_model=settings.llm_model,
         ollama_host_configured=bool(settings.ollama_host),
+
     )
 
 
