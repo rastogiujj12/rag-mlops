@@ -16,7 +16,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: rag-api
-          image: ghcr.io/rastogiujj12/rag-mlops:8478722990b67a303c613da847bab6cf5723267f
+          image: ghcr.io/rastogiujj12/rag-mlops:15e1cde9e09d08c6464f5228b5892fbc1e76f928
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
