@@ -52,7 +52,7 @@ spec:
         - name: outputs
           hostPath:
             path: /runtime-artifacts/outputs
-            type: Directory
+            type: DirectoryOrCreate
 
         - name: artifacts
           hostPath:
@@ -62,7 +62,7 @@ spec:
         - name: processed-data
           hostPath:
             path: /runtime-artifacts/data/processed
-            type: Directory
+            type: DirectoryOrCreate
 
         - name: embedding-cache
           hostPath:
