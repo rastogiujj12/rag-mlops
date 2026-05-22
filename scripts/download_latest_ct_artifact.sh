@@ -9,8 +9,13 @@ WORKFLOWS=(
   "CT - Smart Pipeline"
 )
 
-rm -rf "$OUT_DIR"
-mkdir -p "$OUT_DIR"
+clean_out_dir() {
+  mkdir -p "$OUT_DIR"
+  find "$OUT_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+}
+
+
+clean_out_dir()
 
 echo "Looking for latest valid CT artefact..."
 echo "Repository: $REPO"
@@ -18,6 +23,7 @@ echo "Branch: $BRANCH"
 echo
 
 CANDIDATES_FILE="$(mktemp)"
+
 
 for WF in "${WORKFLOWS[@]}"; do
   echo "Checking workflow: $WF"
@@ -60,8 +66,7 @@ while IFS=$'\t' read -r CREATED_AT RUN_ID HEAD_SHA NAME; do  echo
       # Find root folder containing outputs/
       ART_ROOT="$(dirname "$(dirname "$BEST_MODEL_FILE")")"
 
-      rm -rf "$OUT_DIR"
-      mkdir -p "$OUT_DIR"
+      clean_out_dir() 
       cp -R "$ART_ROOT"/. "$OUT_DIR"/
 
       cat > "$OUT_DIR/deployment_artifact_metadata.json" <<EOF
