@@ -14,8 +14,7 @@ clean_out_dir() {
   find "$OUT_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
 }
 
-
-clean_out_dir()
+clean_out_dir
 
 echo "Looking for latest valid CT artefact..."
 echo "Repository: $REPO"
@@ -23,7 +22,7 @@ echo "Branch: $BRANCH"
 echo
 
 CANDIDATES_FILE="$(mktemp)"
-
+trap 'rm -f "$CANDIDATES_FILE"' EXIT
 
 for WF in "${WORKFLOWS[@]}"; do
   echo "Checking workflow: $WF"
@@ -45,7 +44,8 @@ if [ ! -s "$CANDIDATES_FILE" ]; then
 fi
 
 # Newest first
-while IFS=$'\t' read -r CREATED_AT RUN_ID HEAD_SHA NAME; do  echo
+while IFS=$'\t' read -r CREATED_AT RUN_ID HEAD_SHA NAME; do
+  echo
   echo "Trying run:"
   echo "  Workflow: $NAME"
   echo "  Run ID:   $RUN_ID"
@@ -55,9 +55,9 @@ while IFS=$'\t' read -r CREATED_AT RUN_ID HEAD_SHA NAME; do  echo
   TMP_DIR="$(mktemp -d)"
 
   if gh run download "$RUN_ID" --repo "$REPO" --dir "$TMP_DIR"; then
-    BEST_MODEL_FILE="$(find "$TMP_DIR" -path "*/outputs/best_model.json" -o -path "$TMP_DIR/outputs/best_model.json" | head -1 || true)"
-    CHUNKS_FILE="$(find "$TMP_DIR" -path "*/data/processed/chunks.pkl" -o -path "$TMP_DIR/data/processed/chunks.pkl" | head -1 || true)"
-    BM25_FILE="$(find "$TMP_DIR" -path "*/outputs/indices/bm25.pkl" -o -path "$TMP_DIR/outputs/indices/bm25.pkl" | head -1 || true)"
+    BEST_MODEL_FILE="$(find "$TMP_DIR" \( -path "*/outputs/best_model.json" -o -path "$TMP_DIR/outputs/best_model.json" \) | head -1 || true)"
+    CHUNKS_FILE="$(find "$TMP_DIR" \( -path "*/data/processed/chunks.pkl" -o -path "$TMP_DIR/data/processed/chunks.pkl" \) | head -1 || true)"
+    BM25_FILE="$(find "$TMP_DIR" \( -path "*/outputs/indices/bm25.pkl" -o -path "$TMP_DIR/outputs/indices/bm25.pkl" \) | head -1 || true)"
     DENSE_DIR="$(find "$TMP_DIR" -type d -path "*/outputs/indices/dense" | head -1 || true)"
 
     if [ -n "$BEST_MODEL_FILE" ] && [ -n "$CHUNKS_FILE" ] && [ -n "$BM25_FILE" ] && [ -n "$DENSE_DIR" ]; then
@@ -66,7 +66,7 @@ while IFS=$'\t' read -r CREATED_AT RUN_ID HEAD_SHA NAME; do  echo
       # Find root folder containing outputs/
       ART_ROOT="$(dirname "$(dirname "$BEST_MODEL_FILE")")"
 
-      clean_out_dir() 
+      clean_out_dir
       cp -R "$ART_ROOT"/. "$OUT_DIR"/
 
       cat > "$OUT_DIR/deployment_artifact_metadata.json" <<EOF
@@ -82,6 +82,8 @@ EOF
       echo "Downloaded valid CT artefacts to: $OUT_DIR"
       echo "Best model:"
       cat "$OUT_DIR/outputs/best_model.json"
+
+      rm -rf "$TMP_DIR"
       exit 0
     else
       echo "Artefact from run $RUN_ID is missing required runtime files. Trying older run..."
