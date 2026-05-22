@@ -20,14 +20,8 @@ apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
   - role: control-plane
     extraMounts:
-      - hostPath: "$PROJECT_ROOT/runtime-artifacts/outputs"
-        containerPath: /runtime-artifacts/outputs
-
-      - hostPath: "$PROJECT_ROOT/runtime-artifacts/artifacts"
-        containerPath: /runtime-artifacts/artifacts
-
-      - hostPath: "$PROJECT_ROOT/runtime-artifacts/data/processed"
-        containerPath: /runtime-artifacts/data/processed
+      - hostPath: "$PROJECT_ROOT/runtime-artifacts"
+        containerPath: /runtime-artifacts
 
       - hostPath: "$PROJECT_ROOT/models/sentence-transformers"
         containerPath: /models/sentence-transformers

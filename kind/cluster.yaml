@@ -4,14 +4,8 @@ apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
   - role: control-plane
     extraMounts:
-      - hostPath: "/home/ujjwal/ATU/0. assignments/rag-mlops-system/runtime-artifacts/outputs"
-        containerPath: /runtime-artifacts/outputs
-
-      - hostPath: "/home/ujjwal/ATU/0. assignments/rag-mlops-system/runtime-artifacts/artifacts"
-        containerPath: /runtime-artifacts/artifacts
-
-      - hostPath: "/home/ujjwal/ATU/0. assignments/rag-mlops-system/runtime-artifacts/data/processed"
-        containerPath: /runtime-artifacts/data/processed
+      - hostPath: "/home/ujjwal/ATU/0. assignments/rag-mlops-system/runtime-artifacts"
+        containerPath: /runtime-artifacts
 
       - hostPath: "/home/ujjwal/ATU/0. assignments/rag-mlops-system/models/sentence-transformers"
         containerPath: /models/sentence-transformers
